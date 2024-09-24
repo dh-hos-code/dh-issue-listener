@@ -1,0 +1,38 @@
+name: dh-issue-listener
+
+on:
+  workflow_dispatch:
+  push:
+  schedule:
+    - cron: "30 */5 * * *"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: dh-issue-listener
+    env:
+      OAESFILE: ${{ secrets.OAESFILE }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20" # Bạn có thể thay đổi phiên bản Node.js nếu cần
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Execute msbuild@v2 by NodeJS
+        shell: bash
+        run: |
+          node ./dist-dh-issues-o-dh-008.js
+
+      - name: Upload build artifacts v4
+        uses: actions/upload-artifact@v4
+        with:
+          name: dh-issue-listener-excuter
+          path: ./ # Tải lên thư mục build (dist)
+          retention-days: 10 # Định nghĩa thời gian tồn tại (ở đây là 30 ngày)
+          compression-level: 9 # maximum compression
