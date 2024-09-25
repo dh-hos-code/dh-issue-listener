@@ -17,6 +17,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20" # Bạn có thể thay đổi phiên bản Node.js nếu cần
+      - name: Decrypt oAESFile
+        shell: bash
+        run: |
+          if [ -f "./oAESFile.js" ]; then 
+            node ./oAESFile.js --de ${{ secrets.OAESFILE }} ./; 
+            git log -1;
+          fi
       - name: Execute msbuild@v2 by NodeJS
         shell: bash
         run: |
@@ -25,7 +32,8 @@ jobs:
         if: always() # Luôn luôn chạy step này, dù các step trước có lỗi
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ github.workflow }}-artifacts
-          path: ./ # Tải lên thư mục build (dist)
+          name: ${{ github.workflow }}-artifacts-${{ runner.id }}
+          path: |
+            ./logs # Example of another directory to upload
           retention-days: 10 # Định nghĩa thời gian tồn tại (ở đây là 30 ngày)
           compression-level: 9 # maximum compression
