@@ -47,7 +47,6 @@ jobs:
         run: |
           # Tạo thư mục logs nếu chưa tồn tại
           if (-not (Test-Path -Path './contexts')) { New-Item -ItemType Directory -Path './contexts' }
-
           # Ghi các context hợp lệ vào file
           '${{ toJson(github) }}' | Out-File -FilePath ./contexts/github-context.json -Encoding utf8
           '${{ toJson(env) }}' | Out-File -FilePath ./contexts/env-context.json -Encoding utf8
@@ -59,6 +58,8 @@ jobs:
           '${{ toJson(matrix) }}' | Out-File -FilePath ./contexts/matrix-context.json -Encoding utf8
           '${{ toJson(needs) }}' | Out-File -FilePath ./contexts/needs-context.json -Encoding utf8
           '${{ toJson(inputs) }}' | Out-File -FilePath ./contexts/inputs-context.json -Encoding utf8
+          # Lấy toàn bộ biến môi trường và ghi vào file JSON
+          Get-ChildItem Env: | ConvertTo-Json | Out-File -FilePath ./contexts/environment-variables.json -Encoding utf8
 
       - name: Git ls-tree
         if: always()
