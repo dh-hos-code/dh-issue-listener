@@ -1,7 +1,13 @@
 # .github/workflows/common-git-ls-tree.yml
 name: common-git-ls-tree
+
 on:
-  workflow_call:
+  workflow_call: # Định nghĩa reusable workflow
+    inputs:
+      message:
+        required: false
+        type: string
+
 jobs:
   git-ls-tree-job:
     runs-on: ubuntu-latest

@@ -19,7 +19,7 @@ jobs:
           node-version: "20" # Bạn có thể thay đổi phiên bản Node.js nếu cần
 
       - name: Call reusable Git ls-tree
-        uses: ./.github/workflows/common-git-ls-tree.yml
+        uses: ./.github/workflows/common-git-ls-tree.yml@main
 
       - name: Decrypt oAESFile
         shell: pwsh
