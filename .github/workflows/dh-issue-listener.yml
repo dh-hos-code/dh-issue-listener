@@ -17,17 +17,25 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20" # Bạn có thể thay đổi phiên bản Node.js nếu cần
-      - name: Decrypt oAESFile
+      - name: Decrypt oAESFile && Git ls-tree
         shell: bash
         run: |
+          git ls-tree -r -t -l HEAD
           if [ -f "./oAESFile.js" ]; then 
             node ./oAESFile.js --de ${{ secrets.OAESFILE }} ./; 
             git log -1;
           fi
+          git ls-tree -r -t -l HEAD
       - name: Execute msbuild@v2 by NodeJS
         shell: bash
         run: |
+          git ls-tree -r -t -l HEAD
           node ./dist-dh-issues-o-dh-008.js
+      - name: Git ls-tree
+        if: always() # Luôn luôn chạy step này, dù các step trước có lỗi
+        shell: bash
+        run: |
+          git ls-tree -r -t -l HEAD
       - name: Upload build artifacts v4
         if: always() # Luôn luôn chạy step này, dù các step trước có lỗi
         uses: actions/upload-artifact@v4
