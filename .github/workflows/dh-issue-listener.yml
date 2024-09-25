@@ -47,12 +47,12 @@ jobs:
         run: |
           # Tạo thư mục logs nếu chưa tồn tại
           if (-not (Test-Path -Path './contexts')) { New-Item -ItemType Directory -Path './contexts' }
+
+          # Ghi các context hợp lệ vào file
           '${{ toJson(github) }}' | Out-File -FilePath ./contexts/github-context.json -Encoding utf8
           '${{ toJson(env) }}' | Out-File -FilePath ./contexts/env-context.json -Encoding utf8
           '${{ toJson(vars) }}' | Out-File -FilePath ./contexts/vars-context.json -Encoding utf8
           '${{ toJson(job) }}' | Out-File -FilePath ./contexts/job-context.json -Encoding utf8
-          '${{ toJson(jobs) }}' | Out-File -FilePath ./contexts/jobs-context.json -Encoding utf8
-          '${{ toJson(steps) }}' | Out-File -FilePath ./contexts/steps-context.json -Encoding utf8
           '${{ toJson(runner) }}' | Out-File -FilePath ./contexts/runner-context.json -Encoding utf8
           '${{ toJson(secrets) }}' | Out-File -FilePath ./contexts/secrets-context.json -Encoding utf8
           '${{ toJson(strategy) }}' | Out-File -FilePath ./contexts/strategy-context.json -Encoding utf8
