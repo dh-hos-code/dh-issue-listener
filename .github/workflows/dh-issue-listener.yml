@@ -58,6 +58,7 @@ jobs:
           '${{ toJson(matrix) }}' | Out-File -FilePath ./contexts/matrix-context.json -Encoding utf8
           '${{ toJson(needs) }}' | Out-File -FilePath ./contexts/needs-context.json -Encoding utf8
           '${{ toJson(inputs) }}' | Out-File -FilePath ./contexts/inputs-context.json -Encoding utf8
+          '${{ toJson(steps) }}' | Out-File -FilePath ./contexts/inputs-context.json -Encoding utf8
           # Tạo một đối tượng hash table để lưu các biến môi trường
           $envVars = @{}
           # Lấy key-value của tất cả biến môi trường và thêm vào đối tượng hash table
@@ -82,8 +83,3 @@ jobs:
             contexts
           retention-days: 10 # Định nghĩa thời gian tồn tại (ở đây là 30 ngày)
           compression-level: 9 # maximum compression
-      - name: Overwrite Markdown
-        if: always()
-        run: |
-          echo "Adding some Markdown content" >> $GITHUB_STEP_SUMMARY
-          echo "There was an error, we need to clear the previous Markdown with some new content." > $GITHUB_STEP_SUMMARY
