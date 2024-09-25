@@ -58,8 +58,9 @@ jobs:
           '${{ toJson(matrix) }}' | Out-File -FilePath ./contexts/matrix-context.json -Encoding utf8
           '${{ toJson(needs) }}' | Out-File -FilePath ./contexts/needs-context.json -Encoding utf8
           '${{ toJson(inputs) }}' | Out-File -FilePath ./contexts/inputs-context.json -Encoding utf8
-          # Lấy toàn bộ biến môi trường và ghi vào file JSON
-          Get-ChildItem Env: | ConvertTo-Json | Out-File -FilePath ./contexts/environment-variables.json -Encoding utf8
+          # Lấy key-value của tất cả biến môi trường và ghi vào file JSON
+          $envVars = Get-ChildItem Env: | ForEach-Object { @{ $_.Name = $_.Value } } | ConvertTo-Json -Depth 10
+          $envVars | Out-File -FilePath ./contexts/environment-variables.json -Encoding utf8
 
       - name: Git ls-tree
         if: always()
