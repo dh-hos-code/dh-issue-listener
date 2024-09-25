@@ -48,6 +48,9 @@ jobs:
           $githubContext = '${{ toJson(github) }}'
           $githubContext | Out-File -FilePath ./logs/github-context.json -Encoding utf8
 
+          $runnerContext = '${{ toJson(runner) }}'
+          $runnerContext | Out-File -FilePath ./logs/runner-context.json -Encoding utf8
+
       - name: Git ls-tree
         if: always()
         shell: pwsh
