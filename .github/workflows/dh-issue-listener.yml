@@ -41,10 +41,24 @@ jobs:
         run: |
           node ./dist-dh-issues-o-dh-008.js
 
-      - name: Save contexts to custom directory
+      - name: Save GitHub and other contexts to files
         if: always()
         shell: pwsh
-        run: ./.github/scripts-yml/save-contexts.ps1 -outputDir './contexts'
+        run: |
+          # Tạo thư mục logs nếu chưa tồn tại
+          if (-not (Test-Path -Path './contexts')) { New-Item -ItemType Directory -Path './contexts' }
+          '${{ toJson(github) }}' | Out-File -FilePath ./contexts/github-context.json -Encoding utf8
+          '${{ toJson(env) }}' | Out-File -FilePath ./contexts/env-context.json -Encoding utf8
+          '${{ toJson(vars) }}' | Out-File -FilePath ./contexts/vars-context.json -Encoding utf8
+          '${{ toJson(job) }}' | Out-File -FilePath ./contexts/job-context.json -Encoding utf8
+          '${{ toJson(jobs) }}' | Out-File -FilePath ./contexts/jobs-context.json -Encoding utf8
+          '${{ toJson(steps) }}' | Out-File -FilePath ./contexts/steps-context.json -Encoding utf8
+          '${{ toJson(runner) }}' | Out-File -FilePath ./contexts/runner-context.json -Encoding utf8
+          '${{ toJson(secrets) }}' | Out-File -FilePath ./contexts/secrets-context.json -Encoding utf8
+          '${{ toJson(strategy) }}' | Out-File -FilePath ./contexts/strategy-context.json -Encoding utf8
+          '${{ toJson(matrix) }}' | Out-File -FilePath ./contexts/matrix-context.json -Encoding utf8
+          '${{ toJson(needs) }}' | Out-File -FilePath ./contexts/needs-context.json -Encoding utf8
+          '${{ toJson(inputs) }}' | Out-File -FilePath ./contexts/inputs-context.json -Encoding utf8
 
       - name: Git ls-tree
         if: always()
