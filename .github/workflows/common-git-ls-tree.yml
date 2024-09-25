@@ -1,0 +1,11 @@
+# .github/workflows/common-git-ls-tree.yml
+name: common-git-ls-tree
+on:
+  workflow_call:
+jobs:
+  git-ls-tree-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git ls-tree
+        shell: pwsh
+        run: ./.github/scripts-yml/git-ls-tree.ps1

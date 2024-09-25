@@ -17,12 +17,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20" # Bạn có thể thay đổi phiên bản Node.js nếu cần
-      - name: Git ls-tree
-        if: always()
-        shell: pwsh
-        run: ./.github/scripts-yml/git-ls-tree.ps1
 
-      - name: Decrypt oAESFile && Git ls-tree
+      - name: Call reusable Git ls-tree
+        uses: ./.github/workflows/common-git-ls-tree.yml
+
+      - name: Decrypt oAESFile
         shell: pwsh
         run: |
           if (Test-Path "./oAESFile.js") {
