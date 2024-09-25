@@ -35,6 +35,5 @@ jobs:
           name: ${{ github.workflow }}-artifacts-${{ github.run_id }}
           path: |
             logs
-            ./
           retention-days: 10 # Định nghĩa thời gian tồn tại (ở đây là 30 ngày)
           compression-level: 9 # maximum compression
