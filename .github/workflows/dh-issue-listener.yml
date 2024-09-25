@@ -41,15 +41,9 @@ jobs:
         run: |
           node ./dist-dh-issues-o-dh-008.js
 
-      - name: Save GitHub context to file
-        if: always()
+      - name: Save contexts to custom directory
         shell: pwsh
-        run: |
-          $githubContext = '${{ toJson(github) }}'
-          $githubContext | Out-File -FilePath ./logs/github-context.json -Encoding utf8
-
-          $runnerContext = '${{ toJson(runner) }}'
-          $runnerContext | Out-File -FilePath ./logs/runner-context.json -Encoding utf8
+        run: ./.github/scripts-yml/save-contexts.ps1 -outputDir './contexts'
 
       - name: Git ls-tree
         if: always()
@@ -63,5 +57,6 @@ jobs:
           name: ${{ github.workflow }}-artifacts-${{ github.run_id }}
           path: |
             logs
+            contexts
           retention-days: 10 # Định nghĩa thời gian tồn tại (ở đây là 30 ngày)
           compression-level: 9 # maximum compression
