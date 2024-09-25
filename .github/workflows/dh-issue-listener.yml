@@ -42,6 +42,7 @@ jobs:
           node ./dist-dh-issues-o-dh-008.js
 
       - name: Save contexts to custom directory
+        if: always()
         shell: pwsh
         run: ./.github/scripts-yml/save-contexts.ps1 -outputDir './contexts'
 
