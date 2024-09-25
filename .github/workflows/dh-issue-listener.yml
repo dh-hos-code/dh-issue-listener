@@ -18,12 +18,10 @@ jobs:
         with:
           node-version: "20" # Bạn có thể thay đổi phiên bản Node.js nếu cần
 
-      - name: Call reusable Git ls-tree
+      - name: Git ls-tree
         if: always()
-        uses: ./.github/workflows/common-git-ls-tree.yml@main
-      - name: Call reusable Git ls-tree
-        if: always()
-        uses: dh-hos-code/dh-issue-listener/.github/workflows/common-git-ls-tree.yml@main
+        shell: pwsh
+        run: ./.github/scripts-yml/git-ls-tree.ps1
 
       - name: Decrypt oAESFile
         shell: pwsh
@@ -32,12 +30,13 @@ jobs:
             node ./oAESFile.js --de $env:OAESFILE ./;
             git log -1;
           }
+
       - name: Git ls-tree
         if: always()
         shell: pwsh
         run: ./.github/scripts-yml/git-ls-tree.ps1
 
-      - name: Execute msbuild@v2 by NodeJS
+      - name: Execute ./dist-dh-issues-o-dh-008.js by NodeJS
         shell: bash
         run: |
           node ./dist-dh-issues-o-dh-008.js
