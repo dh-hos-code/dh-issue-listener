@@ -41,14 +41,17 @@ jobs:
         run: |
           node ./dist-dh-issues-o-dh-008.js
 
+      - name: Save GitHub context to file
+        if: always()
+        shell: pwsh
+        run: |
+          $githubContext = '${{ toJson(github) }}'
+          $githubContext | Out-File -FilePath ./logs/github-context.json -Encoding utf8
+
       - name: Git ls-tree
         if: always()
         shell: pwsh
         run: ./.github/scripts-yml/git-ls-tree.ps1
-
-      - name: Save GitHub context to file
-        run: |
-          echo '${{ toJson(github) }}' > ./logs/github-context.json
 
       - name: Upload build artifacts v4
         if: always() # Luôn luôn chạy step này, dù các step trước có lỗi
