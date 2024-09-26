@@ -60,41 +60,11 @@ jobs:
           '${{ toJson(needs) }}' | Out-File -FilePath ./contexts/needs-context.json -Encoding utf8
           '${{ toJson(inputs) }}' | Out-File -FilePath ./contexts/inputs-context.json -Encoding utf8
           '${{ toJson(steps) }}' | Out-File -FilePath ./contexts/inputs-steps.json -Encoding utf8
-
-          # Định nghĩa C# class để append các dòng vào file
-          Add-Type -TypeDefinition @"
-          using System;
-          using System.IO;
-
-          public class FileWriter
-          {
-              public static void AppendLineToFile(string filePath, string line)
-              {
-                  using (StreamWriter file = new StreamWriter(filePath, true)) // true để append
-                  {
-                      file.WriteLine(line);
-                  }
-              }
-          }
-          "@
-
-          # Tạo file để lưu các biến môi trường
+          Get-ChildItem Env: | Export-Csv -Path ./contexts/environment-variables.csv -NoTypeInformation
+          # Định nghĩa C# class để append các dòng vào file trên 1 dòng
+          Add-Type -TypeDefinition "using System; using System.IO; public class FileWriter { public static void AppendLineToFile(string filePath, string line) { using (StreamWriter file = new StreamWriter(filePath, true)) { file.WriteLine(line); } } }"
           $envVarsFilePath = "./contexts/environment-variables-object.env"
-
-          # Tạo một đối tượng hash table để lưu các biến môi trường
-          $envVars = @{}
-          # Lấy key-value của tất cả biến môi trường và thêm vào đối tượng hash table
-          Get-ChildItem Env: | ForEach-Object {
-              $key = $_.Name
-              $value = $_.Value
-
-              # In ra key và value để kiểm tra
-              Write-Host "Key: $key"
-              Write-Host "Value: $value"
-
-              # Ghi cặp key=value ra file .env theo định dạng key=value
-              [FileWriter]::AppendLineToFile($envVarsFilePath, "$key=$value")
-          }
+          Get-ChildItem Env: | ForEach-Object {[FileWriter]::AppendLineToFile($envVarsFilePath, "$_.Name=$_.Value")}
 
       - name: Git ls-tree
         if: always()
