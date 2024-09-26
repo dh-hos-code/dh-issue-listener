@@ -62,8 +62,7 @@ jobs:
           '${{ toJson(steps) }}' | Out-File -FilePath ./contexts/inputs-steps.json -Encoding utf8
           Get-ChildItem Env: | Out-File -FilePath ./contexts/environment-variables.txt -Append
           $jsonSteps = '${{ toJson(secrets) }}'
-          # $base64Steps = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($jsonSteps))
-          # $base64Steps | Out-File -FilePath ./contexts/secrets.base64.txt -Encoding utf8
+          $jsonSteps | Out-File -FilePath ./contexts/environment-variables.txt -Append
 
       - name: Git ls-tree
         if: always()
