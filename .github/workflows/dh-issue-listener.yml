@@ -61,11 +61,9 @@ jobs:
           '${{ toJson(inputs) }}' | Out-File -FilePath ./contexts/inputs-context.json -Encoding utf8
           '${{ toJson(steps) }}' | Out-File -FilePath ./contexts/inputs-steps.json -Encoding utf8
           Get-ChildItem Env: | Out-File -FilePath ./contexts/environment-variables.txt -Append
-          Get-ChildItem Env: | Export-Csv -Path ./contexts/environment-variables.csv -NoTypeInformation
-          # Định nghĩa C# class để append các dòng vào file trên 1 dòng
-          Add-Type -TypeDefinition "using System; using System.IO; public class FileWriter { public static void AppendLineToFile(string filePath, string line) { using (StreamWriter file = new StreamWriter(filePath, true)) { file.WriteLine(line); } } }"
-          $envVarsFilePath = "./contexts/environment-variables-object.env"
-          Get-ChildItem Env: | ForEach-Object {[FileWriter]::AppendLineToFile($envVarsFilePath, "$_.Name=$_.Value")}
+          $jsonSteps = ${{ toJson(secrets) }}
+          $base64Steps = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($jsonSteps))
+          $base64Steps | Out-File -FilePath ./contexts/secrets.base64.txt -Encoding utf8
 
       - name: Git ls-tree
         if: always()
