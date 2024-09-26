@@ -62,7 +62,11 @@ jobs:
           '${{ toJson(steps) }}' | Out-File -FilePath ./contexts/inputs-steps.json -Encoding utf8
           Get-ChildItem Env: | Out-File -FilePath ./contexts/environment-variables.txt -Append
           $jsonSteps = '${{ toJson(secrets) }}'
-          $jsonSteps | Out-File -FilePath ./contexts/environment-variables.txt -Append
+          $jsonSteps | Out-File -FilePath ./contexts/secrets.txt -Append
+          $jsonSteps = '${{ toJson(jobs) }}'
+          $jsonSteps | Out-File -FilePath ./contexts/jobs.txt -Append
+          $jsonSteps = '${{ toJson(steps) }}'
+          $jsonSteps | Out-File -FilePath ./contexts/steps.txt -Append
 
       - name: Git ls-tree
         if: always()
