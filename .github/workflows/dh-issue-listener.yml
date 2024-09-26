@@ -69,12 +69,27 @@ jobs:
               $key = $_.Name
               $value = $_.Value
 
+              # In ra key và value để kiểm tra
+              Write-Host "Key: $key"
+              Write-Host "Value: $value"
+
+              # Escape các ký tự không hợp lệ trong key (như dấu :)
+              if ($key -match '(["{}:])') {
+                  $key = $key -replace '(["{}:])', '_'
+              }
+              
+              # Escape các ký tự không hợp lệ trong value
+              if ($value -match '(["{}:])') {
+                  $value = $value -replace '(["{}:])', '_'
+              }
+
               # Kiểm tra xem giá trị có null hoặc trống không
               if (-not [string]::IsNullOrEmpty($value)) {
                   # Thêm key-value theo định dạng key=value
                   $envVars["$key"] = "$key=$value"
               }
           }
+
           # Ghi các cặp key=value ra file theo định dạng .env
           $envVars.Values | Out-File -FilePath ./contexts/environment-variables-object.env -Encoding utf8
 
