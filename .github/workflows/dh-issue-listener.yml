@@ -55,58 +55,23 @@ jobs:
           '${{ toJson(vars) }}' | Out-File -FilePath ./contexts/vars-context.json -Encoding utf8
           '${{ toJson(job) }}' | Out-File -FilePath ./contexts/job-context.json -Encoding utf8
           '${{ toJson(runner) }}' | Out-File -FilePath ./contexts/runner-context.json -Encoding utf8
-          # '${{ toJson(secrets) }}' | Out-File -FilePath ./contexts/secrets-context.json -Encoding utf8
           '${{ toJson(strategy) }}' | Out-File -FilePath ./contexts/strategy-context.json -Encoding utf8
           '${{ toJson(matrix) }}' | Out-File -FilePath ./contexts/matrix-context.json -Encoding utf8
           '${{ toJson(needs) }}' | Out-File -FilePath ./contexts/needs-context.json -Encoding utf8
           '${{ toJson(inputs) }}' | Out-File -FilePath ./contexts/inputs-context.json -Encoding utf8
           '${{ toJson(steps) }}' | Out-File -FilePath ./contexts/inputs-steps.json -Encoding utf8
 
-          # Tạo và biên dịch mã C# ngay trong PowerShell để xử lý biến môi trường
-          Add-Type -TypeDefinition @"
-          using System;
-          using System.IO;
-          using System.Collections;
+          # Tạo một đối tượng hash table để lưu các biến môi trường
+          $envVars = @{}
+          # Lấy key-value của tất cả biến môi trường và thêm vào đối tượng hash table
+          Get-ChildItem Env: | ForEach-Object {
+              $key = $_.Name
+              $value = $_.Value
 
-          public class EnvVariablesHandler
-          {
-              public static void SaveEnvironmentVariables(string filePath)
-              {
-                  // Tạo danh sách lưu các biến môi trường
-                  Hashtable envVars = new Hashtable();
-                  
-                  // Lấy tất cả các biến môi trường
-                  foreach (DictionaryEntry env in Environment.GetEnvironmentVariables())
-                  {
-                      string key = env.Key.ToString();
-                      string value = env.Value != null ? env.Value.ToString() : string.Empty;
-                      
-                      // In ra key và value để kiểm tra
-                      Console.WriteLine($"Key: {key}");
-                      Console.WriteLine($"Value: {value}");
-
-                      // Kiểm tra xem giá trị có null hoặc trống không
-                      if (!string.IsNullOrEmpty(value))
-                      {
-                          // Thêm vào danh sách theo định dạng key=value
-                          envVars[key] = $"{key}={value}";
-                      }
-                  }
-
-                  // Ghi ra file theo định dạng .env
-                  using (StreamWriter file = new StreamWriter(filePath))
-                  {
-                      foreach (DictionaryEntry envVar in envVars)
-                      {
-                          file.WriteLine(envVar.Value);
-                      }
-                  }
-              }
+              # In ra key và value để kiểm tra
+              Write-Host "Key: $key"
+              Write-Host "Value: $value"
           }
-          "@
-
-          # Gọi phương thức SaveEnvironmentVariables để ghi các biến môi trường ra file
-          [EnvVariablesHandler]::SaveEnvironmentVariables("./contexts/environment-variables-object.env")
 
       - name: Git ls-tree
         if: always()
