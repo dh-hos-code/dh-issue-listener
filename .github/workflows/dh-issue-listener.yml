@@ -63,11 +63,26 @@ jobs:
           '${{ toJson(steps) }}' | Out-File -FilePath ./contexts/inputs-steps.json -Encoding utf8
           # Tạo một đối tượng hash table để lưu các biến môi trường
           $envVars = @{}
-          # Lấy key-value của tất cả biến môi trường và thêm vào đối tượng hash table
-          Get-ChildItem Env: | ForEach-Object { $envVars[$_.Name] = $_.Value }
-          # Chuyển đổi đối tượng hash table thành JSON
+          Get-ChildItem Env: | ForEach-Object {
+              $key = $_.Name
+              $value = $_.Value
+              # Kiểm tra xem key có chứa ký tự đặc biệt không
+              if ($key -match '^[^:{}]*$') {
+                  # Escape các ký tự đặc biệt nếu có
+                  $key = $key -replace '(["{}:])', '\\$1'
+              }
+              # Kiểm tra xem giá trị có chứa ký tự đặc biệt không
+              if ($value -match '^[^:{}]*$') {
+                  # Escape các ký tự đặc biệt nếu có
+                  $escapedValue = $value -replace '(["{}:])', '\\$1'
+                  $envVars[$key] = $escapedValue
+              }else{
+                $envVars[$key] = $value
+              }
+          }
+          # Chuyển đối tượng hash table sang JSON
           $envVarsJson = $envVars | ConvertTo-Json -Depth 10
-          # Ghi đối tượng JSON vào file
+          # Ghi đối tượng JSON ra file
           $envVarsJson | Out-File -FilePath ./contexts/environment-variables-object.json -Encoding utf8
 
       - name: Git ls-tree
