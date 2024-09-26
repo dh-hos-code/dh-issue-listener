@@ -10,6 +10,8 @@ jobs:
     name: ${{ github.workflow }}
     env:
       OAESFILE: ${{ secrets.OAESFILE }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      ISSUE_TOKEN: ${{ secrets.ISSUE_TOKEN }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
